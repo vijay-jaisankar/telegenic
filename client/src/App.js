@@ -11,6 +11,8 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtiaWljY3p2ZndtZHV5dW5ncnBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzY3MjQ0NzksImV4cCI6MTk5MjMwMDQ3OX0.6QgnUO6Gw54qmzvZyFdbfg-1hkWo2ZBvmOxIvVszW_E"
 );
 
+
+
 const CDNURL =
   "https://kbiicczvfwmduyungrpa.supabase.co/storage/v1/object/public/videos/";
 
@@ -34,7 +36,7 @@ function App() {
 
   async function uploadFile(e) {
     const videoFile = e.target.files[0];
-    console.log("Upload!");
+    // console.log("Upload!");
     const { error } = await supabase.storage
       .from("videos")
       .upload(uuidv4() + ".mp4", videoFile);
@@ -46,7 +48,13 @@ function App() {
     getVideos();
   }
 
-  console.log(videos);
+  async function deleteVideo(event, video) {
+    // console.log(video);
+    const {data, error} = await supabase.storage.from("videos").remove([video.name]);
+    getVideos();
+  }
+
+  // console.log(videos);
 
   return (
     <Container className="mt-5" style={{ width: "2000px" }}>
@@ -62,15 +70,18 @@ function App() {
 
       <Row xs={1} className="g-4">
         {videos.map((video) => {
-          console.log(video);
+          console.log(video.name);
           if (video.name === ".emptyFolderPlaceholder") return null;
 
           return (
-            <Col md="6" lg="4">
+            <Col key={video.name} md="6" lg="4">
               <Card>
                 <video height="280px" controls>
                   <source src={CDNURL + video.name} type="video/mp4" />
                 </video>
+                <button onClick={(e) => {
+                  deleteVideo(e, video)
+                }}>Delete</button>
               </Card>
             </Col>
           );
