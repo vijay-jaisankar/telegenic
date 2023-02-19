@@ -10,5 +10,6 @@ Telegenic is a platform for budding video creators where they can produce and pu
 * npm start
 
 
-### to use the telegenic flask application for video production
-* 
+### To use the telegenic flask application for video production
+* cd flask
+* flask run
